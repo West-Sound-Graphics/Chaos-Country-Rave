@@ -1,0 +1,53 @@
+retro‑inspired arcade action‑puzzle
+top‑down digging, bubble‑inflating enemies, and rock‑falling tactics
+
+# Core Gameplay Loop
+    Step: Dig 
+    What Happens: The player moves the drill left/right/up/down, carving new paths through layers of soil.
+    Player Goal: Create a safe corridor or trap for enemies.
+
+    Step: Encounter
+    What Happens: Enemies (Pooka‑style “Bubbles” and Fuzzy‑style “Goblins”) appear in the tunnel.
+    Player Goal: Survive their approach.
+
+    Step: Attack
+    What Happens: 1. Inflate enemies with the air cannon to pop them. 2. Drop rocks from above by breaking the ceiling.
+    Player Goal: Eliminate all foes before they reach you or your base.
+
+    Step: Collect & Upgrade
+    What Happens: Pick up coins, power‑ups, and upgrade tokens scattered in the tunnel.
+    Player Goal: Improve drill speed, cannon range, rock durability, etc.
+
+    Step: Repeat
+    What Happens: New enemies spawn as the player continues to dig deeper.
+    Player Goal: Clear each level while managing resources and avoiding traps.
+
+# Enemies & Challenges
+    Bubble‑Busters (Pookas): Inflate them until they burst; otherwise, they’ll explode on contact with you or the walls.
+    Gloom‑Goblins (Fuzzies): They move in straight lines and can be crushed by falling rocks.
+    Magma Pits & Spike Traps: Static hazards that require careful planning to avoid.
+    Boss Encounters: At level milestones, a giant “Earth Serpent” challenges the player’s timing and strategy.
+
+# Power‑Ups & Upgrades
+    Item: Turbo Drill
+    Effect: Increases digging speed temporarily.
+
+    Item: Super Air Cannon
+    Effect: Inflates enemies faster, handles larger bubbles.
+
+    Item: Stone Skin
+    Effect: Grants temporary immunity to falling rocks.
+
+    Item: Coin Magnet
+    Effect: Pulls nearby coins toward the player for a short burst.
+
+    Item: Upgrade Tokens
+    Effect: Unlock new drill skins, cannon colors, and bonus lives.
+
+# Visual & Audio Style
+    Pixel‑Art Graphics: 6×16 pixel sprites with vibrant color palettes reminiscent of early ’80s arcade cabinets.
+    Dynamic Lighting: Subtle shading to emphasize depth in the underground layers.
+    Chiptune Soundtrack: Energetic, looping tracks that drive the pace and shift when a boss appears.
+
+
+    
