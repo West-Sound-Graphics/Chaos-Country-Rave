@@ -38,7 +38,27 @@ const player = {
   speed: 3
 };
 
-// Enemies
+let blastCooldown = 0;
+const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
+
+function playerMicBlast() {
+  // Blast radius
+  const blastRadius = TILE * 1.5; // 1.5 tiles
+  // Remove enemies within radius
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const ex = enemies[i].x + enemies[i].size / 2;
+    const ey = enemies[i].y + enemies[i].size / 2;
+    const dx = ex - player.x;
+    const dy = ey - player.y;
+    if (Math.hypot(dx, dy) < blastRadius) {
+      enemies.splice(i, 1);
+      // Create simple blast effect
+      blastEffectActive = true;
+      blastEffectTimer = 30;
+    }
+  }
+}
+\n// Enemies
 const enemies = [];
 for (let i = 0; i < 4; i++) {
   enemies.push({
@@ -90,6 +110,31 @@ function update() {
   if (!collision(player, player.vx, 0)) player.x += player.vx;
   if (!collision(player, 0, player.vy)) player.y += player.vy;
 
+  let blastCooldown = 0;
+const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
+
+function playerMicBlast() {
+  // Blast radius
+  const blastRadius = TILE * 1.5; // 1.5 tiles
+  // Remove enemies within radius
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    const ex = enemies[i].x + enemies[i].size / 2;
+    const ey = enemies[i].y + enemies[i].size / 2;
+    const dx = ex - player.x;
+    const dy = ey - player.y;
+    if (Math.hypot(dx, dy) < blastRadius) {
+      enemies.splice(i, 1);
+      // Create simple blast effect
+      blastEffectActive = true;
+      blastEffectTimer = 30;
+    }
+  }
+}
+\n  // Mic blast (Space)
+  if (keys[' '] && blastCooldown === 0) {
+    playerMicBlast();
+    blastCooldown = BLLAST_COOLDOWN_MAX;
+  }
   // Enemies move horizontally, bounce off walls
   enemies.forEach(e => {
     if (!collision(e, e.vx, 0)) e.x += e.vx;
@@ -109,9 +154,10 @@ function draw() {
     });
   });
 
-  // Draw player
-  ctx.fillStyle = player.color;
-  ctx.fillRect(player.x, player.y, player.size, player.size);
+  // Draw player sprite
+  if (playerSprite.complete) {
+    ctx.drawImage(playerSprite, player.x, player.y, player.size, player.size);
+  };
 
   // Draw enemies
   enemies.forEach(e => {
@@ -132,6 +178,12 @@ const musicToggle = document.getElementById('musicToggle');
 const audio = new Audio('assets/party.mp3');
 audio.loop = true;
 audio.muted = true;
+
+const playerSprite = new Image();
+playerSprite.src = 'assets/sprites/player_placeholder.png';
+
+let blastEffectActive = false;
+let blastEffectTimer = 0;
 
 musicToggle.addEventListener('click', () => {
   audio.muted = !audio.muted;
