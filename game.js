@@ -61,15 +61,25 @@ function playerMicBlast() {
 \n// Enemies
 const enemies = [];
 for (let i = 0; i < 4; i++) {
+  const typeIdx = Math.floor(Math.random() * 3);
+  const eType = ['bubble','gloom','normal'][typeIdx];
   enemies.push({
     x: TILE * (Math.floor(Math.random()*GRID_W)+1),
     y: TILE * (Math.floor(Math.random()*GRID_H)+1),
     size: TILE - 8,
-    color: '#00e676',
+    color: eType === 'bubble' ? '#00e676' : '#ff4081',
     vx: Math.random() < 0.5 ? 1.5 : -1.5,
-    vy: 0
+    vy: 0,
+    type: eType,
+    inflated: false
   });
 }
+
+// Magma pit hazard positions (tile based)
+const magmaPits = [
+  {x: TILE * 3, y: TILE * 2, w: TILE, h: TILE},
+  {x: TILE * 7, y: TILE * 5, w: TILE, h: TILE}
+];
 
 // Input
 const keys = {};
@@ -85,6 +95,25 @@ canvas.addEventListener('click', e => {
   const gy = Math.floor(my / TILE);
   if (grid[gy] && grid[gy][gx] === 1) {
     grid[gy][gx] = 0; // dig
+  }
+  // Check if click hit an enemy
+  const hitEnemy = enemies.find(en =>
+    mx >= en.x && mx <= en.x + en.size &&
+    my >= en.y && my <= en.y + en.size
+  );
+  if (hitEnemy) {
+    if (hitEnemy.type === 'bubble') {
+      if (hitEnemy.inflated) {
+        // Burst the inflated bubble
+        enemies.splice(enemies.indexOf(hitEnemy), 1);
+      } else {
+        hitEnemy.inflated = true;
+        hitEnemy.color = '#ff00ff';
+      }
+    } else if (hitEnemy.type === 'gloom') {
+      // Simple knockback for gloom
+      hitEnemy.y -= 10;
+    }
   }
 });
 
@@ -109,6 +138,21 @@ function update() {
 
   if (!collision(player, player.vx, 0)) player.x += player.vx;
   if (!collision(player, 0, player.vy)) player.y += player.vy;
+
+  // Decrease blast cooldown
+  if (blastCooldown > 0) {
+    blastCooldown--;
+  }
+
+  // Check magma pit collisions
+  magmaPits.forEach(pit => {
+    if (player.x < pit.x + pit.w && player.x + player.size > pit.x &&
+        player.y < pit.y + pit.h && player.y + player.size > pit.y) {
+      // Reset player position on hazard touch (simple handling)
+      player.x = TILE * 2;
+      player.y = TILE * 2;
+    }
+  });
 
   let blastCooldown = 0;
 const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
@@ -163,6 +207,12 @@ function draw() {
   enemies.forEach(e => {
     ctx.fillStyle = e.color;
     ctx.fillRect(e.x, e.y, e.size, e.size);
+  });
+
+  // Draw magma pit hazards
+  ctx.fillStyle = '#550000';
+  magmaPits.forEach(pit => {
+    ctx.fillRect(pit.x, pit.y, pit.w, pit.h);
   });
 }
 
