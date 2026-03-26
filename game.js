@@ -53,8 +53,10 @@ function loadLevelData(levelIndex) {
     .then(r => r.json())
     .then(data => {
       levels = data;
+      // Find level by id or use array index
+      const level = data.find(l => l.id === levelIndex + 1) || data[levelIndex] || data[0];
       currentLevel = levelIndex;
-      currentLevelData = data[levelIndex] || data[0];
+      currentLevelData = level;
     })
     .catch(err => console.error('Failed to load stages.json', err));
 }
@@ -70,9 +72,6 @@ const savedScore = localStorage.getItem('playerScore');
 if (savedScore) {
   playerScore = parseInt(savedScore, 10);
 }
-
-// Initialize level data and assets
-loadLevelData(0);
 
 function playerMicBlast() {
   // Blast radius
@@ -91,9 +90,10 @@ function playerMicBlast() {
     }
   }
 }
-\n// Enemies
+
+// Enemies
 const enemies = [];
-for (let i = 0; i < (currentLevelData.enemyCount || 4); i++) {
+for (let i = 0; i < (currentLevelData && currentLevelData.enemyCount ? currentLevelData.enemyCount : 4); i++) {
   const typeIdx = Math.floor(Math.random() * 3);
   const eType = ['bubble','gloom','normal'][typeIdx];
   enemies.push({
@@ -117,7 +117,7 @@ const baseHazardPositions = [
 ];
 const magmaPits = [];
 // Generate hazards based on density
-const maxHazards = Math.min(4, Math.ceil(currentLevelData.hazardDensity * 4));
+const maxHazards = Math.min(4, Math.ceil(currentLevelData ? currentLevelData.hazardDensity : 0.5 * 4));
 for (let i = 0; i < maxHazards; i++) {
   const idx = i % baseHazardPositions.length;
   const pos = baseHazardPositions[idx];
@@ -291,9 +291,13 @@ function draw() {
   });
 
   // Draw player sprite
-  if (playerSprite.complete) {
+  if (playerSprite.complete && playerSprite.naturalHeight !== 0) {
     ctx.drawImage(playerSprite, player.x, player.y, player.size, player.size);
-  };
+  } else {
+    // Fallback: draw colored rectangle if sprite not loaded
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+  }
 
   // Draw enemies
   enemies.forEach(e => {
@@ -335,13 +339,33 @@ loop();
 const musicToggle = document.getElementById('musicToggle');
 const audio = new Audio('assets/party.mp3');
 audio.loop = true;
-audio.muted = true;
+// Don't mute by default - allow music to play on user interaction
+audio.muted = false;
 
 const playerSprite = new Image();
 playerSprite.src = 'assets/sprites/player_placeholder.png';
 
 let blastEffectActive = false;
 let blastEffectTimer = 0;
+
+// Initialize audio context to allow autoplay after user interaction
+const initAudio = () => {
+  audio.play().then(() => {
+    audio.muted = false; // Ensure unmuted
+    musicToggle.textContent = 'Music On';
+  }).catch(e => {
+    // Autoplay blocked - common in browsers
+    console.log('Audio autoplay blocked, user must click music button');
+    musicToggle.textContent = 'Music Off';
+  });
+};
+
+// Try to play on first user interaction (e.g., clicking canvas or music button)
+document.addEventListener('click', () => {
+  if (!audio.playing && audio.readyState === 4) {
+    initAudio();
+  }
+}, { once: true });
 
 musicToggle.addEventListener('click', () => {
   audio.muted = !audio.muted;
