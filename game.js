@@ -41,9 +41,15 @@ const player = {
 let blastCooldown = 0;
 const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
 
+// Player effect timers
+let boostedBlastRadius = 1;
+let boostedFrames = 0;
+const BOOST_FRAMES_MAX = 180; // 3 seconds at 60fps
+let playerScore = 0;
+
 function playerMicBlast() {
   // Blast radius
-  const blastRadius = TILE * 1.5; // 1.5 tiles
+  const blastRadius = TILE * boostedBlastRadius;
   // Remove enemies within radius
   for (let i = enemies.length - 1; i >= 0; i--) {
     const ex = enemies[i].x + enemies[i].size / 2;
@@ -79,6 +85,15 @@ for (let i = 0; i < 4; i++) {
 const magmaPits = [
   {x: TILE * 3, y: TILE * 2, w: TILE, h: TILE},
   {x: TILE * 7, y: TILE * 5, w: TILE, h: TILE}
+];
+
+// Power-up definitions (initially static positions)
+const powerUps = [
+  {x: TILE * 5, y: TILE * 3, type: 'glowmic', collected: false, size: TILE - 4},
+  {x: TILE * 8, y: TILE * 6, type: 'encoreshot', collected: false, size: TILE - 4},
+  {x: TILE * 2, y: TILE * 4, type: 'stageshield', collected: false, size: TILE - 4},
+  {x: TILE * 10, y: TILE * 2, type: 'proppack', collected: false, size: TILE - 4},
+  {x: TILE * 6, y: TILE * 8, type: 'beatbooster', collected: false, size: TILE - 4}
 ];
 
 // Input
@@ -154,12 +169,47 @@ function update() {
     }
   });
 
+  // Check power-up collection
+  powerUps.forEach(pu => {
+    if (!pu.collected) {
+      if (player.x < pu.x + pu.size && player.x + player.size > pu.x &&
+          player.y < pu.y + pu.size && player.y + player.size > pu.y) {
+        pu.collected = true;
+        playerScore += 100; // simple score increase
+        switch (pu.type) {
+          case 'glowmic':
+            boostedFrames = BOOST_FRAMES_MAX;
+            boostedBlastRadius = 1.5;
+            break;
+          case 'encoreshot':
+            // Could set rapid shot flag
+            break;
+          case 'stageshield':
+            // Placeholder for shield duration
+            break;
+          case 'proppack':
+            // Placeholder for prop pack
+            break;
+          case 'beatbooster':
+            // Could speed up music or animation
+            break;
+        }
+      }
+    }
+  });
+
   let blastCooldown = 0;
 const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
 
+// Player effect timers
+let boostedBlastRadius = 1;
+let boostedFrames = 0;
+const BOOST_FRAMES_MAX = 180; // 3 seconds at 60fps
+let playerScore = 0;
+
 function playerMicBlast() {
   // Blast radius
-  const blastRadius = TILE * 1.5; // 1.5 tiles
+  const blastRadius = TILE * boostedBlastRadius;
   // Remove enemies within radius
   for (let i = enemies.length - 1; i >= 0; i--) {
     const ex = enemies[i].x + enemies[i].size / 2;
@@ -184,6 +234,14 @@ function playerMicBlast() {
     if (!collision(e, e.vx, 0)) e.x += e.vx;
     else e.vx *= -1;
   });
+
+  // Decrease boosted frames timer
+  if (boostedFrames > 0) {
+    boostedFrames--;
+    if (boostedFrames === 0) {
+      boostedBlastRadius = 1;
+    }
+  }
 }
 
 function draw() {
@@ -208,6 +266,21 @@ function draw() {
     ctx.fillStyle = e.color;
     ctx.fillRect(e.x, e.y, e.size, e.size);
   });
+
+  // Draw power-ups
+  powerUps.forEach(pu => {
+    if (!pu.collected) {
+      ctx.fillStyle = '#ff0';
+      ctx.beginPath();
+      ctx.arc(pu.x + pu.size/2, pu.y + pu.size/2, pu.size/2, 0, Math.PI*2);
+      ctx.fill();
+    }
+  });
+
+  // Draw score
+  ctx.fillStyle = '#fff';
+  ctx.font = '20px Arial';
+  ctx.fillText(`Score: ${playerScore}`, 20, 40);
 
   // Draw magma pit hazards
   ctx.fillStyle = '#550000';
