@@ -58,6 +58,11 @@ let boostedBlastRadius = 1;
 let boostedFrames = 0;
 const BOOST_FRAMES_MAX = 180; // 3 seconds at 60fps
 let playerScore = 0;
+// Load persisted score
+const savedScore = localStorage.getItem('playerScore');
+if (savedScore) {
+  playerScore = parseInt(savedScore, 10);
+}
 
 function playerMicBlast() {
   // Blast radius
@@ -221,6 +226,8 @@ function update() {
             // Could speed up music or animation
             break;
         }
+        // Persist score
+        localStorage.setItem('playerScore', playerScore);
       }
     }
   });
@@ -245,6 +252,11 @@ let boostedBlastRadius = 1;
 let boostedFrames = 0;
 const BOOST_FRAMES_MAX = 180; // 3 seconds at 60fps
 let playerScore = 0;
+// Load persisted score
+const savedScore = localStorage.getItem('playerScore');
+if (savedScore) {
+  playerScore = parseInt(savedScore, 10);
+}
 
 function playerMicBlast() {
   // Blast radius
