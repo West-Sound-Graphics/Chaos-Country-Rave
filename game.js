@@ -242,60 +242,7 @@ function update() {
     }
   });
 
-  let blastCooldown = 0;
-const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
-
-// Load level data
-let levels = [];
-let currentLevel = 0;
-let levelData = {};
-let bgImg = new Image();
-bgImg.onload = () => { /* background ready */ };
-bgImg.onerror = () => console.warn('Background image not found');
-function loadLevelData(levelIndex) {
-  fetch('stages.json')
-    .then(r => r.json())
-    .then(data => {
-      levels = data;
-      currentLevel = levelIndex;
-      currentLevelData = data[levelIndex] || data[0];
-    })
-    .catch(err => console.error('Failed to load stages.json', err));
-}
-loadLevelData(0); // start with first level
-
-// Player effect timers
-let boostedBlastRadius = 1;
-let boostedFrames = 0;
-const BOOST_FRAMES_MAX = 180; // 3 seconds at 60fps
-let playerScore = 0;
-// Load persisted score
-const savedScore = localStorage.getItem('playerScore');
-if (savedScore) {
-  playerScore = parseInt(savedScore, 10);
-}
-
-// Initialize level data and assets
-loadLevelData(0);
-
-function playerMicBlast() {
-  // Blast radius
-  const blastRadius = TILE * boostedBlastRadius;
-  // Remove enemies within radius
-  for (let i = enemies.length - 1; i >= 0; i--) {
-    const ex = enemies[i].x + enemies[i].size / 2;
-    const ey = enemies[i].y + enemies[i].size / 2;
-    const dx = ex - player.x;
-    const dy = ey - player.y;
-    if (Math.hypot(dx, dy) < blastRadius) {
-      enemies.splice(i, 1);
-      // Create simple blast effect
-      blastEffectActive = true;
-      blastEffectTimer = 30;
-    }
-  }
-}
-\n  // Mic blast (Space)
+  // Mic blast (Space)
   if (keys[' '] && blastCooldown === 0) {
     playerMicBlast();
     blastCooldown = BLLAST_COOLDOWN_MAX;
