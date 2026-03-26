@@ -1,0 +1,133 @@
+# Game Update Plan
+
+## Objective
+Integrate the detailed game design from Brainstorm.txt into the current implementation in incremental, reviewable steps. This document captures the planned changes, ordered by phase, and serves as a reference for each development iteration.
+
+---
+
+## Phase 1: Project Setup & Exploration
+1. **Create a feature branch**
+   - `git checkout -b feature/integrate-brainstorm`
+   - Ensures all brainstorm‑related changes are isolated.
+
+2. **Audit existing codebase**
+   - `index.html` – entry point, canvas, music toggle.
+   - `game.js` – core loop, player/move logic, simple enemy AI, digging mechanic.
+   - `assets/party.mp3` – background music placeholder.
+   - Note folder structure (`assets/`, potential `src/` for future organization).
+
+3. **Set up local preview**
+   - Run `npx serve .` to verify the current game loads and music toggle works.
+   - Confirm no runtime errors in the console.
+
+4. **Add basic asset placeholders**
+   - Create directories for sprites: `assets/sprites/`, `assets/backgrounds/`.
+   - Add placeholder PNGs (e.g., `player_placeholder.png`) to guide UI work.
+
+---
+
+## Phase 2: Core Mechanics Expansion
+1. **Enhance player representation**
+   - Replace simple square with a pixel‑art sprite (`assets/sprites/player.png`).
+   - Add simple animation frames for digging and moving.
+
+2. **Implement “Mic Blast” attack**
+   - Player can press a designated key (e.g., `Space`) to emit a blast radius.
+   - blast logic: clear enemies within a 2‑tile radius, convert them to glitter particles.
+
+3. **Add “Drop Stage Props”**
+   - On a second key (e.g., `Shift`), spawn a falling prop (`assets/sprites/prop_placeholder.png`).
+   - Implement collision detection so props crush enemies below.
+
+4. **Enemies & Challenges**
+   - **Bubble‑Busters** (Pooka‑style): Inflate when clicked, burst when inflated.
+   - **Gloom‑Goblins** (Fuzzy‑style): Move in straight lines, can be crushed by props.
+   - **Magma Pits / Spike Traps**: Add tile types that damage the player on contact.
+
+5. **Boss Encounter**
+   - Design `DJ‑Drone` boss sprite and script a two‑phase attack pattern.
+   - On defeat, trigger an “Encore” sequence granting bonus points and unlocking a new track.
+
+---
+
+## Phase 3: Power‑Ups & Upgrades
+1. **Item Definitions** (refer to Brainstorm.txt)
+   - **Glow‑Mic** – Increases blast radius, adds sparkling trail.
+   - **Encore Shot** – Fires rapid confetti blasts for a short burst.
+   - **Stage Shield** – Grants temporary invincibility (glowing hologram effect).
+   - **Prop Pack** – Drops stack of collectible props for extra points.
+   - **Beat Booster** – Temporarily speeds up music tempo, boosting drill speed.
+
+2. **Implementation Steps**
+   - Create item objects with `type`, `duration`, and `effect` fields.
+   - On player collision with an item, apply the effect and spawn visual particles.
+   - Use a simple cooldown timer to prevent rapid re‑acquisition.
+
+3. **Upgrade System**
+   - Collect “upgrade tokens” to unlock permanent upgrades (e.g., drill speed +1, cannon range +1).
+   - Store upgrade state in a global `playerUpgrades` object.
+
+---
+
+## Phase 4: Visual & Audio Style
+1. **Pixel‑Art Graphics**
+   - Replace placeholder squares with 6×16 pixel sprites for player, enemies, and props.
+   - Use vibrant palettes (neon pinks, electric blues) per the design.
+
+2. **Dynamic Lighting**
+   - Add per‑tile lighting map to simulate depth (darker tones for deeper layers).
+   - Apply a subtle radial light around the player during digging.
+
+3. **Audio Enhancements**
+   - Add layered sound effects for digging, blasts, prop drops, enemy inflate/deflate.
+   - Create a `assets/sfx/` folder with short WAV clips.
+   - Sync music tempo changes with `Beat Booster` activation.
+
+4. **UI Elements**
+   - Add icons for power‑ups in a corner HUD.
+   - Show a dance‑move indicator when the player performs a speed boost.
+
+---
+
+## Phase 5: Level Design & Progression
+1. **Stage Templates**
+   - Create a JSON file `stages.json` with layout data (grid patterns, enemy spawn points).
+   - Populate with 5–10 initial stages inspired by concert venues (LA club, Rio stadium, etc.).
+
+2. **Progression Mechanics**
+   - Each cleared stage increments difficulty: faster enemy movement, tighter spawn windows.
+   - Reward players with “chart‑topping hits” (collectibles) that unlock new songs.
+
+3. **Save/Load**
+   - Persist player progress in `localStorage` (e.g., unlocked stages, upgrades).
+
+---
+
+## Phase 6: Testing, Polish & Deployment
+1. **Local Playtesting**
+   - Use `npx serve .` to test each phase.
+   - Verify all key bindings, collision detection, and UI feedback.
+
+2. **Bug Fixes & Iteration**
+   - Address any collision bugs, memory leaks, or audio loading issues.
+   - Adjust difficulty curves based on feedback.
+
+3. **Commit Strategy**
+   - Commit after each phase with a descriptive message (e.g., “Phase 2 – Add mic blast & prop drop mechanics”).
+   - Follow the existing commit style (short summary, blank line, optional body).
+
+4. **Push & GitHub Pages Deploy**
+   - `git push origin feature/integrate-brainstorm`
+   - GitHub Actions will auto‑deploy the updated `dist/` folder to GitHub Pages.
+   - Open the deployed URL to confirm the live experience.
+
+---
+
+## Risks & Mitigations
+- **Regression**: Test after each phase using the local server before committing.
+- **Asset Overload**: Keep placeholder assets minimal; replace with final art later.
+- **Scope Creep**: Stick to the phased plan; defer optional visual polish to later iterations.
+
+---
+
+*Document maintained by Claude Code – version 1.0 (2026‑03‑25).*
