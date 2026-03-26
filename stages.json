@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "gridPattern": "border,random",
+    "enemyCount": 4,
+    "hazardDensity": 0.1,
+    "bgMusic": "party.mp3",
+    "bgImage": "backgrounds/club.png"
+  },
+  {
+    "id": 2,
+    "gridPattern": "border,random,dense",
+    "enemyCount": 6,
+    "hazardDensity": 0.2,
+    "bgMusic": "stadium.mp3",
+    "bgImage": "backgrounds/stadium.png"
+  },
+  {
+    "id": 3,
+    "gridPattern": "wide,random",
+    "enemyCount": 8,
+    "hazardDensity": 0.25,
+    "bgMusic": "final.mp3",
+    "bgImage": "backgrounds/final.png"
+  }
+]

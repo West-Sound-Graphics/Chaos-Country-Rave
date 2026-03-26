@@ -41,6 +41,18 @@ const player = {
 let blastCooldown = 0;
 const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
 
+// Load level data
+let levels = [];
+let currentLevel = 0;
+let levelData = {};
+fetch('stages.json')
+  .then(r => r.json())
+  .then(data => {
+    levels = data;
+    currentLevelData = data[0]; // default to first level
+  })
+  .catch(err => console.error('Failed to load stages.json', err));
+
 // Player effect timers
 let boostedBlastRadius = 1;
 let boostedFrames = 0;
@@ -66,7 +78,7 @@ function playerMicBlast() {
 }
 \n// Enemies
 const enemies = [];
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < (currentLevelData.enemyCount || 4); i++) {
   const typeIdx = Math.floor(Math.random() * 3);
   const eType = ['bubble','gloom','normal'][typeIdx];
   enemies.push({
@@ -82,10 +94,25 @@ for (let i = 0; i < 4; i++) {
 }
 
 // Magma pit hazard positions (tile based)
-const magmaPits = [
-  {x: TILE * 3, y: TILE * 2, w: TILE, h: TILE},
-  {x: TILE * 7, y: TILE * 5, w: TILE, h: TILE}
+const baseHazardPositions = [
+  {x: TILE * 3, y: TILE * 2},
+  {x: TILE * 7, y: TILE * 5},
+  {x: TILE * 5, y: TILE * 8},
+  {x: TILE * 1, y: TILE * 4}
 ];
+const magmaPits = [];
+// Generate hazards based on density
+const maxHazards = Math.min(4, Math.ceil(currentLevelData.hazardDensity * 4));
+for (let i = 0; i < maxHazards; i++) {
+  const idx = i % baseHazardPositions.length;
+  const pos = baseHazardPositions[idx];
+  magmaPits.push({
+    x: pos.x * TILE,
+    y: pos.y * TILE,
+    w: TILE,
+    h: TILE
+  });
+}
 
 // Power-up definitions (initially static positions)
 const powerUps = [
@@ -200,6 +227,18 @@ function update() {
 
   let blastCooldown = 0;
 const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
+
+// Load level data
+let levels = [];
+let currentLevel = 0;
+let levelData = {};
+fetch('stages.json')
+  .then(r => r.json())
+  .then(data => {
+    levels = data;
+    currentLevelData = data[0]; // default to first level
+  })
+  .catch(err => console.error('Failed to load stages.json', err));
 
 // Player effect timers
 let boostedBlastRadius = 1;
