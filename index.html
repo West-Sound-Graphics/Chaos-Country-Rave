@@ -2,16 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chaos Country Rave</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaos Country Rave - Dig Dug Style</title>
   <style>
-    body{margin:0;overflow:hidden;background:#222;color:#fff;font-family:Arial}
-    canvas{display:block;background:#111}
-    #musicToggle{position:absolute;top:10px;right:10px;background:#ff4081;color:#fff;border:none;padding:5px 10px;border-radius:5px;cursor:pointer}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      overflow: hidden;
+      background: #1a1a2e;
+      font-family: 'Arial', sans-serif;
+    }
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100vh;
+    }
+    #ui {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+    .hud-panel {
+      background: rgba(0,0,0,0.7);
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      pointer-events: auto;
+    }
+    .hud-left { border-left: 3px solid #ff4081; }
+    .hud-right { border-right: 3px solid #ff4081; text-align: right; }
+    #controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+    }
+    #controls kbd {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border-bottom: 2px solid #111;
+    }
+    #musicToggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff4081;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      pointer-events: auto;
+      z-index: 100;
+    }
+    #musicToggle:hover { background: #e03a79; }
+    #blastBtn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #e03a79;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      pointer-events: auto;
+      z-index: 100;
+      font-weight: bold;
+    }
+    #blastBtn:hover { background: #c03070; }
+    #blastBtn:active { transform: scale(0.95); }
+    #blastBtn:disabled { background: #555; cursor: not-allowed; }
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas"></canvas>
+  <div id="ui">
+    <div class="hud-panel hud-left">
+      <div><strong>Score:</strong> <span id="score">0</span></div>
+      <div><strong>Level:</strong> <span id="level">1</span></div>
+      <div><strong>Lives:</strong> <span id="lives">3</span></div>
+    </div>
+    <div class="hud-panel hud-right">
+      <div><strong>Enemies:</strong> <span id="enemyCount">0</span></div>
+      <div><strong>Time:</strong> <span id="time">60</span>s</div>
+    </div>
+  </div>
+  <div id="controls">
+    <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Move • <kbd>Click</kbd> to Dig • <kbd>Space</kbd> or <kbd>Click Blast</kbd> to Blast
+  </div>
   <button id="musicToggle">Music On</button>
-  <script src="game.js"></script>
+  <button id="blastBtn">Blast!</button>
+  <canvas id="gameCanvas"></canvas>
 </body>
 </html>
