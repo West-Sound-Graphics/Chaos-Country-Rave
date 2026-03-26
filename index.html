@@ -26,6 +26,7 @@
       justify-content: space-between;
       align-items: flex-start;
       pointer-events: none;
+      z-index: 10;
     }
     .hud-panel {
       background: rgba(0,0,0,0.7);
@@ -46,12 +47,14 @@
       border-radius: 8px;
       color: #fff;
       font-size: 12px;
+      pointer-events: auto;
     }
     #controls kbd {
       background: #333;
       padding: 2px 6px;
       border-radius: 4px;
       border-bottom: 2px solid #111;
+      color: #ff4081;
     }
     #musicToggle {
       position: absolute;
@@ -66,6 +69,7 @@
       font-size: 14px;
       pointer-events: auto;
       z-index: 100;
+      font-weight: bold;
     }
     #musicToggle:hover { background: #e03a79; }
     #blastBtn {
@@ -85,10 +89,11 @@
     }
     #blastBtn:hover { background: #c03070; }
     #blastBtn:active { transform: scale(0.95); }
-    #blastBtn:disabled { background: #555; cursor: not-allowed; }
+    #blastBtn:disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
   </style>
 </head>
 <body>
+  <!-- HUD Overlay -->
   <div id="ui">
     <div class="hud-panel hud-left">
       <div><strong>Score:</strong> <span id="score">0</span></div>
@@ -100,11 +105,21 @@
       <div><strong>Time:</strong> <span id="time">60</span>s</div>
     </div>
   </div>
+
+  <!-- Controls help -->
   <div id="controls">
-    <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Move • <kbd>Click</kbd> to Dig • <kbd>Space</kbd> or <kbd>Click Blast</kbd> to Blast
+    <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> Move • <kbd>D</kbd> to Dig • <kbd>Space</kbd> to Blast • <kbd>M</kbd> Music
   </div>
-  <button id="musicToggle">Music On</button>
-  <button id="blastBtn">Blast!</button>
+
+  <!-- UI Buttons -->
+  <button id="musicToggle">🎵 Music On</button>
+  <button id="blastBtn">💥 Blast!</button>
+
+  <!-- Three.js Canvas -->
   <canvas id="gameCanvas"></canvas>
+
+  <!-- Load Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
