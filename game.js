@@ -45,13 +45,20 @@ const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
 let levels = [];
 let currentLevel = 0;
 let levelData = {};
-fetch('stages.json')
-  .then(r => r.json())
-  .then(data => {
-    levels = data;
-    currentLevelData = data[0]; // default to first level
-  })
-  .catch(err => console.error('Failed to load stages.json', err));
+let bgImg = new Image();
+bgImg.onload = () => { /* background ready */ };
+bgImg.onerror = () => console.warn('Background image not found');
+function loadLevelData(levelIndex) {
+  fetch('stages.json')
+    .then(r => r.json())
+    .then(data => {
+      levels = data;
+      currentLevel = levelIndex;
+      currentLevelData = data[levelIndex] || data[0];
+    })
+    .catch(err => console.error('Failed to load stages.json', err));
+}
+loadLevelData(0); // start with first level
 
 // Player effect timers
 let boostedBlastRadius = 1;
@@ -63,6 +70,9 @@ const savedScore = localStorage.getItem('playerScore');
 if (savedScore) {
   playerScore = parseInt(savedScore, 10);
 }
+
+// Initialize level data and assets
+loadLevelData(0);
 
 function playerMicBlast() {
   // Blast radius
@@ -239,13 +249,20 @@ const BLLAST_COOLDOWN_MAX = 60; // frames between blasts
 let levels = [];
 let currentLevel = 0;
 let levelData = {};
-fetch('stages.json')
-  .then(r => r.json())
-  .then(data => {
-    levels = data;
-    currentLevelData = data[0]; // default to first level
-  })
-  .catch(err => console.error('Failed to load stages.json', err));
+let bgImg = new Image();
+bgImg.onload = () => { /* background ready */ };
+bgImg.onerror = () => console.warn('Background image not found');
+function loadLevelData(levelIndex) {
+  fetch('stages.json')
+    .then(r => r.json())
+    .then(data => {
+      levels = data;
+      currentLevel = levelIndex;
+      currentLevelData = data[levelIndex] || data[0];
+    })
+    .catch(err => console.error('Failed to load stages.json', err));
+}
+loadLevelData(0); // start with first level
 
 // Player effect timers
 let boostedBlastRadius = 1;
@@ -257,6 +274,9 @@ const savedScore = localStorage.getItem('playerScore');
 if (savedScore) {
   playerScore = parseInt(savedScore, 10);
 }
+
+// Initialize level data and assets
+loadLevelData(0);
 
 function playerMicBlast() {
   // Blast radius
@@ -293,11 +313,27 @@ function playerMicBlast() {
       boostedBlastRadius = 1;
     }
   }
+
+  // Level progression: every 500 points go to next level
+  if (playerScore >= (currentLevel + 1) * 500) {
+    currentLevel++;
+    loadLevelData(currentLevel);
+  }
 }
 
 function draw() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  // Draw grid
+  // Draw background image if available
+  if (bgImg.src) {
+    // stretch background to canvas size
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+  } else {
+    // fallback grid background
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Draw grid overlay
   ctx.fillStyle = '#444';
   grid.forEach((row, y) => {
     row.forEach((cell, x) => {
@@ -328,10 +364,11 @@ function draw() {
     }
   });
 
-  // Draw score
+  // Draw score and level
   ctx.fillStyle = '#fff';
   ctx.font = '20px Arial';
   ctx.fillText(`Score: ${playerScore}`, 20, 40);
+  ctx.fillText(`Level: ${currentLevel + 1}`, 20, 65);
 
   // Draw magma pit hazards
   ctx.fillStyle = '#550000';
